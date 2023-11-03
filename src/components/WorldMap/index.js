@@ -1,13 +1,10 @@
-import React, { useRef, useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import { MapContainer, TileLayer, GeoJSON, Marker, useMapEvents } from 'react-leaflet';
-import * as turf from '@turf/turf';
 import countries from 'geojson-world-map';
 
 
   
   const WorldMap = ({ onSelectCountry, selectedCountry }) => {
-    const [countriesData, setCountriesData] = useState(null);
-    const geoJsonRef = useRef();
   
     const defaultStyle = {
         fillColor: 'transparent', // Set to 'transparent' or use any color with low opacity
@@ -26,10 +23,11 @@ import countries from 'geojson-world-map';
       // Define the style function
       const style = (feature) => {
         if (selectedCountry && feature.properties.iso_a2 === selectedCountry) {
-          return highlightStyle;
+          return highlightStyle; // Your highlighted style as defined
         }
-        return defaultStyle;
+        return defaultStyle; // Now will render unselected countries as transparent
       };
+      
       
       const onEachFeature = (feature, layer) => {
         layer.on({
@@ -42,7 +40,7 @@ import countries from 'geojson-world-map';
 
     function LocationMarker({ onSelectCountry }) {
         const [position, setPosition] = useState(null);
-        const map = useMapEvents({
+        useMapEvents({
         click(e) {
             setPosition(e.latlng);
             // You would need a way to resolve e.latlng to a country code here

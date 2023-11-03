@@ -9,12 +9,6 @@ function App() {
     setSelectedCountry(isoCode);
   };
   
-
-  const onSelectCountry = (isoCode) => {
-    setSelectedCountry(isoCode);
-  };
-  
-
   return (
     <div id="map" style={{ width: '100%', height: '100vh' }}>
       <link
