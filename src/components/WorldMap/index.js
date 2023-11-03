@@ -1,5 +1,6 @@
 import React, { useState} from 'react';
 import { MapContainer, TileLayer, GeoJSON, Marker, useMapEvents } from 'react-leaflet';
+import L from 'leaflet';
 import countries from 'geojson-world-map';
 
 
@@ -17,22 +18,29 @@ import countries from 'geojson-world-map';
         fillColor: 'yellow',
         weight: 2,
         color: '#666',
-        fillOpacity: 1,
+        fillOpacity: .5,
       };
+
+      const transparentIcon = L.divIcon({
+        className: 'custom-div-icon',
+        html: "<div style='width: 0; height: 0;'></div>", // empty or 1px transparent image
+        iconSize: [0, 0],
+        iconAnchor: [0, 0]
+    });
     
-      // Define the style function
       const style = (feature) => {
-        if (selectedCountry && feature.properties.iso_a2 === selectedCountry) {
-          return highlightStyle; // Your highlighted style as defined
+        if (selectedCountry && feature.properties.name === selectedCountry) {
+          return highlightStyle;
         }
-        return defaultStyle; // Now will render unselected countries as transparent
+        return defaultStyle;
       };
+      
       
       
       const onEachFeature = (feature, layer) => {
         layer.on({
           click: () => {
-            onSelectCountry(feature.properties.iso_a2);
+            onSelectCountry(feature.properties.name);
           },
         });
       };
@@ -41,15 +49,16 @@ import countries from 'geojson-world-map';
     function LocationMarker({ onSelectCountry }) {
         const [position, setPosition] = useState(null);
         useMapEvents({
-        click(e) {
-            setPosition(e.latlng);
-            // You would need a way to resolve e.latlng to a country code here
-            onSelectCountry("United States");
-        },
-        });
-  
+            click(e) {
+              setPosition(e.latlng);
+              if (e.properties) {
+                onSelectCountry(e.properties.name); 
+              }
+            },
+          });
+          
     return position === null ? null : (
-      <Marker position={position}>
+      <Marker position={position} icon={transparentIcon}>
         {/* Your marker representation */}
       </Marker>
     );
