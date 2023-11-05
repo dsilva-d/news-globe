@@ -1,0 +1,14 @@
+.info-box {
+    max-width: 300px;
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.info-box-content h2 {
+    margin-top: 0;
+}
+
+/* Add other styles as needed */

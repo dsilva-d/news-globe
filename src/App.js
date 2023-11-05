@@ -5,7 +5,6 @@ function App() {
   const [selectedCountry, setSelectedCountry] = useState('');
 
   const handleCountrySelect = (isoCode) => {
-    console.log('Selected country changed to:', isoCode);
     setSelectedCountry(isoCode);
   };
   
