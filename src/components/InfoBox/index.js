@@ -14,7 +14,7 @@ const InfoBox = ({ position, selectedCountry, onClose }) => {
         setArticles(fetchedArticles.slice(0,3));
       } catch (error) {
         // Handle the error accordingly
-        setArticles([]);
+        setArticles([{title: 'Sorry', description: 'Unfortunately, this country isn\'t covered'}]);
         console.error(error);
       }
     };
@@ -43,7 +43,7 @@ const InfoBox = ({ position, selectedCountry, onClose }) => {
                 {article.title}
               </Link>
             </h3>
-            <p>{article.description}</p> {/* description is used by NewsAPI */}
+            <p>{article.description || article.summary}</p> {/* description is used by NewsAPI */}
           </div>
         ))}
         <button onClick={onClose}>Close</button>
