@@ -1,0 +1,5 @@
+[build]
+  publish = "build" # The directory that Netlify should deploy as your public folder. For Create-React-App, it's typically "build".
+  functions = "backend/functions" # The directory where your Netlify serverless functions are located.
+
+# Add any additional build settings, headers, redirects, etc. below as needed.
