@@ -1,26 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import Link from '@mui/material/Link'; // Correct the import
-import { fetchTopArticlesByCountry } from './newsService'; // Assuming this is the correct path
+import Link from '@mui/material/Link';
+import { fetchTopArticlesByCountry } from './newsService';
 import getCountryCode from './countryCode';
 import './index.css';
 
 const InfoBox = ({ position, selectedCountry, onClose }) => {
   const [articles, setArticles] = useState([]);
 
+  const translateArticle = async (article) => {
+    const translatedTitle = await translateText(article.title);
+    const translatedDescription = await translateText(article.description || article.summary);
+    return { ...article, title: translatedTitle, description: translatedDescription };
+  };
+
+  const translateText = async (text) => {
+    try {
+      const response = await fetch('/.netlify/functions/translate-text', {
+        method: 'POST',
+        body: JSON.stringify({ text }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      return data.translatedText;
+    }  catch (error) {
+      console.error('Error translating text:', error);
+      throw error; // Throw the error to see it in the calling function
+    }
+  };
+
   useEffect(() => {
-    const loadArticles = async () => {
+    const loadAndTranslateArticles = async () => {
       try {
         const fetchedArticles = await fetchTopArticlesByCountry(getCountryCode(selectedCountry));
-        setArticles(fetchedArticles.slice(0,3));
+        const translatedArticles = await Promise.all(fetchedArticles.slice(0,3).map(translateArticle));
+        setArticles(translatedArticles);
       } catch (error) {
-        // Handle the error accordingly
         setArticles([{title: 'Sorry', description: 'Unfortunately, this country isn\'t covered'}]);
         console.error(error);
       }
     };
 
     if (selectedCountry) {
-      loadArticles();
+      loadAndTranslateArticles();
     }
   }, [selectedCountry]);
 
@@ -43,7 +66,7 @@ const InfoBox = ({ position, selectedCountry, onClose }) => {
                 {article.title}
               </Link>
             </h3>
-            <p>{article.description || article.summary}</p> {/* description is used by NewsAPI */}
+            <p>{article.description}</p>
           </div>
         ))}
         <button onClick={onClose}>Close</button>
