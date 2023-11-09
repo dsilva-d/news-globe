@@ -7,12 +7,6 @@ import './index.css';
 const InfoBox = ({ position, selectedCountry, onClose }) => {
   const [articles, setArticles] = useState([]);
 
-  const translateArticle = async (article) => {
-    const translatedTitle = await translateText(article.title);
-    const translatedDescription = await translateText(article.description || article.summary);
-    return { ...article, title: translatedTitle, description: translatedDescription };
-  };
-
   const translateText = async (text) => {
     try {
       const response = await fetch('/.netlify/functions/translate-text', {
@@ -31,6 +25,12 @@ const InfoBox = ({ position, selectedCountry, onClose }) => {
   };
 
   useEffect(() => {
+    const translateArticle = async (article) => {
+      const translatedTitle = await translateText(article.title);
+      const translatedDescription = await translateText(article.description || article.summary);
+      return { ...article, title: translatedTitle, description: translatedDescription };
+    };
+
     const loadAndTranslateArticles = async () => {
       try {
         const fetchedArticles = await fetchTopArticlesByCountry(getCountryCode(selectedCountry));
